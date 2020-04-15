@@ -3,6 +3,7 @@ package com.dimeno.network.parser;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.dimeno.network.ClientLoader;
 import com.dimeno.network.callback.RequestCallback;
 import com.dimeno.network.type.ErrorType;
 import com.dimeno.network.util.Generics;
@@ -10,6 +11,9 @@ import com.dimeno.network.util.JsonUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import okhttp3.Response;
 
@@ -28,7 +32,7 @@ public final class ResponseParser {
                 onError(ErrorType.UNKNOWN_ERROR, e.getMessage(), callback);
             }
         } else {
-            onError(ErrorType.SERVER_FAILED, "HTTP status code(" + response.code() + ") != 200. Message: " + response.message(), callback);
+            onError(ErrorType.SERVER_FAILED, ErrorType.wrap(response.code()), callback);
         }
     }
 
@@ -54,6 +58,23 @@ public final class ResponseParser {
         }
     }
 
+    public static <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
+        int code;
+        if (e instanceof UnknownHostException) {
+            code = ErrorType.UNKNOWN_HOST;
+        } else if (e instanceof SocketTimeoutException) {
+            code = ErrorType.TIME_OUT;
+            // 解决停留网络超时问题
+            ClientLoader.getClient().connectionPool().evictAll();
+        } else if (e instanceof ConnectException) {
+            // 网络连接失败(eg:代理出问题)
+            code = ErrorType.CONNECT_EXCEPTION;
+        } else {
+            code = ErrorType.UNKNOWN_ERROR;
+        }
+        onError(code, ErrorType.wrap(code), callback);
+    }
+
     private static <EntityType> void onSuccess(final EntityType data, final RequestCallback<EntityType> callback) {
         runOnUiThread(new Runnable() {
             @Override
@@ -63,10 +84,6 @@ public final class ResponseParser {
                 }
             }
         });
-    }
-
-    public static <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
-
     }
 
     private static <EntityType> void onError(final int code, final String message, final RequestCallback<EntityType> callback) {

@@ -1,8 +1,8 @@
 package com.dimeno.network.sample;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,7 +32,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new TestGetTask(new LoadingCallback<PluginVersion>() {
             @Override
             public void onSuccess(PluginVersion data) {
-                Log.e("TAG", data.version_name);
+                Toast.makeText(MainActivity.this, data.version_name + " " + data.version_description, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         }).exe();
     }

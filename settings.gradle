@@ -1,0 +1,3 @@
+rootProject.name='dimeno-network'
+include ':app'
+include ':library'

@@ -1,11 +1,13 @@
 package com.dimeno.network.sample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dimeno.network.callback.LoadingCallback;
+import com.dimeno.network.sample.entity.PluginVersion;
 import com.dimeno.network.sample.task.TestGetTask;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -27,10 +29,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void get() {
-        new TestGetTask(new LoadingCallback<String>() {
+        new TestGetTask(new LoadingCallback<PluginVersion>() {
             @Override
-            public void onSuccess(String data) {
-                
+            public void onSuccess(PluginVersion data) {
+                Log.e("TAG", data.version_name);
             }
         }).exe();
     }

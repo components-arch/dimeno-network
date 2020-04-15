@@ -1,12 +1,12 @@
 package com.dimeno.network.base;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.dimeno.network.ClientLoader;
 import com.dimeno.network.Network;
 import com.dimeno.network.callback.RequestCallback;
 import com.dimeno.network.manager.CallManager;
+import com.dimeno.network.parser.ResponseParser;
 import com.dimeno.network.type.RequestType;
 import com.dimeno.network.util.ParamsBuilder;
 
@@ -22,6 +22,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * base task
@@ -137,11 +138,13 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
 
     @Override
     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-        Log.e("TAG", "-> onResponse : " + response.body().string());
+        CallManager.get().remove(mTag);
+        ResponseParser.parseResponse(response, mCallback);
     }
 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
-        Log.e("TAG", "-> onFailure : " + e.getMessage());
+        CallManager.get().remove(mTag);
+        ResponseParser.parseError(e, mCallback);
     }
 }

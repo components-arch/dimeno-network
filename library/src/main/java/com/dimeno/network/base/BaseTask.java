@@ -48,6 +48,12 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
     public Call exe(Object... params) {
         this.mParams = params;
         onSetupParams(params);
+        if (mTag instanceof View) {
+            LifecycleManager.registerView((View) mTag);
+        }
+        if (mCallback != null) {
+            mCallback.onStart();
+        }
         return doTask();
     }
 
@@ -71,11 +77,8 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
         ParamsBuilder.buildHeaders(builder, mHeaders);
 
         Call call = ClientLoader.getClient().newCall(builder.build());
-        call.enqueue(this);
         CallManager.get().add(mTag, call);
-        if (mTag instanceof View) {
-            LifecycleManager.registerView((View) mTag);
-        }
+        call.enqueue(this);
         return call;
     }
 

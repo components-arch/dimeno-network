@@ -1,6 +1,7 @@
 package com.dimeno.network.sample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -40,6 +41,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void postForm() {
         new TestPostFormTask(new LoadingCallback<PluginVersion>() {
+
+            @Override
+            public void onStart() {
+                Log.e("TAG", "-> onStart");
+            }
+
             @Override
             public void onSuccess(PluginVersion data) {
                 Toast.makeText(MainActivity.this, "Post Form -> " + data.version_name + " " + data.version_description, Toast.LENGTH_SHORT).show();
@@ -48,6 +55,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, "Post Form -> " + message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("TAG", "-> onComplete");
             }
         }).exe();
     }

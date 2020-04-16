@@ -34,6 +34,7 @@ public final class ResponseParser {
         } else {
             onError(ErrorType.SERVER_FAILED, ErrorType.wrap(response.code()), callback);
         }
+        onComplete(callback);
     }
 
     private static <EntityType> void handleBody(final Response response, final RequestCallback<EntityType> callback) throws IOException {
@@ -73,6 +74,7 @@ public final class ResponseParser {
             code = ErrorType.UNKNOWN_ERROR;
         }
         onError(code, ErrorType.wrap(code), callback);
+        onComplete(callback);
     }
 
     private static <EntityType> void onSuccess(final EntityType data, final RequestCallback<EntityType> callback) {
@@ -92,6 +94,17 @@ public final class ResponseParser {
             public void run() {
                 if (callback != null) {
                     callback.onError(code, message);
+                }
+            }
+        });
+    }
+
+    private static <EntityType> void onComplete(final RequestCallback<EntityType> callback) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (callback != null) {
+                    callback.onComplete();
                 }
             }
         });

@@ -1,5 +1,6 @@
 package com.dimeno.network;
 
+import com.dimeno.network.interceptor.ProgressInterceptor;
 import com.dimeno.network.manager.SSLSocketManager;
 import com.dimeno.network.provider.ContextProvider;
 
@@ -17,6 +18,7 @@ public class ClientLoader {
     public static OkHttpClient getClient() {
         SSLSocketManager sslSocketManager = new SSLSocketManager();
         return new OkHttpClient.Builder()
+                .addInterceptor(new ProgressInterceptor())
                 .retryOnConnectionFailure(true)
                 .sslSocketFactory(sslSocketManager.getSSLSocketFactory(), sslSocketManager.getX509TrustManager())
                 .hostnameVerifier(sslSocketManager.getHostnameVerifier())

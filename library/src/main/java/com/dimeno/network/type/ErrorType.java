@@ -20,6 +20,8 @@ public class ErrorType {
 
     public static final int RESPONSE_BODY_EMPTY = 5;
 
+    public static final int CONTENT_LENGTH_EMPTY = 6;
+
     public static String wrap(int code) {
         String message;
         switch (code) {

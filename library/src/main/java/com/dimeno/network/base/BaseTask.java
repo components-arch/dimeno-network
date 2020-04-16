@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.dimeno.network.ClientLoader;
 import com.dimeno.network.Network;
+import com.dimeno.network.callback.ProgressCallback;
 import com.dimeno.network.callback.RequestCallback;
 import com.dimeno.network.manager.CallManager;
 import com.dimeno.network.manager.LifecycleManager;
@@ -75,6 +76,10 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
                 break;
         }
         ParamsBuilder.buildHeaders(builder, mHeaders);
+
+        if (mCallback instanceof ProgressCallback) {
+            builder.tag(mCallback);
+        }
 
         Call call = ClientLoader.getClient().newCall(builder.build());
         CallManager.get().add(mTag, call);

@@ -1,19 +1,27 @@
 package com.dimeno.network.callback;
 
+import androidx.annotation.MainThread;
+
 /**
- * ApiCallback
+ * base callback
  * Created by wangzhen on 2020/4/15.
  */
 public interface RequestCallback<ResultType> {
+    @MainThread
     void onStart();
 
+    @MainThread
     void onProgress(int progress);
 
+    @MainThread
     void onSuccess(ResultType data);
 
+    @MainThread
     void onError(int code, String message);
 
+    @MainThread
     void onCancel();
 
+    @MainThread
     void onComplete();
 }

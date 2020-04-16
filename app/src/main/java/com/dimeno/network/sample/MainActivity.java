@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dimeno.network.callback.LoadingCallback;
+import com.dimeno.network.callback.ProgressCallback;
 import com.dimeno.network.sample.entity.PluginVersion;
 import com.dimeno.network.sample.task.TestGetTask;
 import com.dimeno.network.sample.task.TestPostFormTask;
@@ -60,10 +61,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void upload() {
         String path = Environment.getExternalStorageDirectory() + "/Recorder/sample.mp3";
-        new TestUploadTask(new LoadingCallback<String>() {
+        new TestUploadTask(new ProgressCallback<String>() {
             @Override
             public void onSuccess(String data) {
                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                Log.e("TAG", "-> upload onProgress " + progress + " " + Thread.currentThread().getName());
             }
 
             @Override
@@ -74,10 +80,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void postForm() {
-        new TestPostFormTask(new LoadingCallback<PluginVersion>() {
+        new TestPostFormTask(new ProgressCallback<PluginVersion>() {
             @Override
             public void onStart() {
                 Log.e("TAG", "-> onStart");
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                Log.e("TAG", "-> postForm onProgress " + progress + " " + Thread.currentThread().getName());
             }
 
             @Override

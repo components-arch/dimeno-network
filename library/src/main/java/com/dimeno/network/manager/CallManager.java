@@ -21,6 +21,12 @@ public class CallManager {
         return instance;
     }
 
+    /**
+     * add call with tag
+     *
+     * @param tag  tag
+     * @param call call
+     */
     public void add(Object tag, Call call) {
         Set<Call> calls = mCalls.get(tag);
         if (calls == null) {
@@ -30,10 +36,36 @@ public class CallManager {
         calls.add(call);
     }
 
+    /**
+     * remove calls with tag
+     *
+     * @param tag tag
+     */
     public void remove(Object tag) {
         mCalls.remove(tag);
     }
 
+    /**
+     * remove single call with tag
+     *
+     * @param tag  tag
+     * @param call call
+     */
+    public void removeCall(Object tag, Call call) {
+        Set<Call> calls = mCalls.get(tag);
+        if (calls != null && !calls.isEmpty()) {
+            calls.remove(call);
+            if (calls.isEmpty()) {
+                remove(tag);
+            }
+        }
+    }
+
+    /**
+     * cancel calls by tag
+     *
+     * @param tag tag
+     */
     public void cancel(Object tag) {
         Set<Call> calls = mCalls.get(tag);
         if (calls != null && !calls.isEmpty()) {

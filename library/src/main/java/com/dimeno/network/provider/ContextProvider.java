@@ -9,6 +9,8 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.dimeno.network.manager.LifecycleManager;
+
 /**
  * ContextProvider
  * Created by wangzhen on 2020/4/15.
@@ -19,6 +21,7 @@ public class ContextProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         sContext = getContext();
+        LifecycleManager.registerActivities();
         return false;
     }
 

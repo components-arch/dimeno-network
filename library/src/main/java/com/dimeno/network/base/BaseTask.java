@@ -1,11 +1,13 @@
 package com.dimeno.network.base;
 
 import android.text.TextUtils;
+import android.view.View;
 
 import com.dimeno.network.ClientLoader;
 import com.dimeno.network.Network;
 import com.dimeno.network.callback.RequestCallback;
 import com.dimeno.network.manager.CallManager;
+import com.dimeno.network.manager.LifecycleManager;
 import com.dimeno.network.parser.ResponseParser;
 import com.dimeno.network.type.RequestType;
 import com.dimeno.network.util.ParamsBuilder;
@@ -66,15 +68,14 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
                 builder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
                 break;
         }
-//        if (mRequestType == RequestType.GET) {
-//            ParamsBuilder.buildHeaders(builder, mHeaders);
-//        }
         ParamsBuilder.buildHeaders(builder, mHeaders);
 
         Call call = ClientLoader.getClient().newCall(builder.build());
         call.enqueue(this);
-        registerLifecycle();
         CallManager.get().add(mTag, call);
+        if (mTag instanceof View) {
+            LifecycleManager.registerView((View) mTag);
+        }
         return call;
     }
 
@@ -86,12 +87,6 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
             }
         }
         return api;
-    }
-
-    private void registerLifecycle() {
-        if (mTag != null) {
-
-        }
     }
 
     @Override
@@ -139,13 +134,13 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
 
     @Override
     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-        CallManager.get().remove(mTag);
+        CallManager.get().removeCall(mTag, call);
         ResponseParser.parseResponse(response, mCallback);
     }
 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
-        CallManager.get().remove(mTag);
+        CallManager.get().removeCall(mTag, call);
         ResponseParser.parseError(e, mCallback);
     }
 }

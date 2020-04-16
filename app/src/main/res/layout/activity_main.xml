@@ -12,4 +12,16 @@
         android:layout_height="wrap_content"
         android:text="get" />
 
+    <Button
+        android:id="@+id/btn_post_json"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="post json" />
+
+    <Button
+        android:id="@+id/btn_post_form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="post form" />
+
 </LinearLayout>

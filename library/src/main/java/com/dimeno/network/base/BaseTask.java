@@ -22,7 +22,6 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * base task
@@ -67,9 +66,11 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
                 builder.url(url).post(ParamsBuilder.buildUpload(mParamsMap, mFilesMap));
                 break;
         }
-        if (mRequestType == RequestType.GET) {
-            ParamsBuilder.buildHeaders(builder, mHeaders);
-        }
+//        if (mRequestType == RequestType.GET) {
+//            ParamsBuilder.buildHeaders(builder, mHeaders);
+//        }
+        ParamsBuilder.buildHeaders(builder, mHeaders);
+
         Call call = ClientLoader.getClient().newCall(builder.build());
         call.enqueue(this);
         registerLifecycle();

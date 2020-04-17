@@ -10,9 +10,11 @@ public abstract class ProgressCallback<ResultType> implements RequestCallback<Re
 
     }
 
+    public abstract void onProgress(int progress);
+
     @Override
     public void onSuccess(ResultType data) {
-        
+
     }
 
     @Override

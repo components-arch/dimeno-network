@@ -12,11 +12,6 @@ public abstract class LoadingCallback<ResultType> implements RequestCallback<Res
     }
 
     @Override
-    public void onProgress(int progress) {
-        
-    }
-
-    @Override
     public void onError(int code, String message) {
 
     }

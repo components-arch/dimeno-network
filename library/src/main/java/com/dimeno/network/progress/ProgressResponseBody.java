@@ -1,7 +1,6 @@
 package com.dimeno.network.progress;
 
 import com.dimeno.network.callback.ProgressCallback;
-import com.dimeno.network.type.ErrorType;
 import com.dimeno.network.util.ThreadHelper;
 
 import java.io.IOException;
@@ -55,12 +54,12 @@ public class ProgressResponseBody extends ResponseBody {
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
-                if (contentLength == 0) {
-                    contentLength = contentLength();
-                }
                 if (mCallback != null) {
+                    if (contentLength == 0) {
+                        contentLength = contentLength();
+                    }
                     totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                    if (bytesRead != -1) {
+                    if (bytesRead == -1) {
                         return bytesRead;
                     }
                     if (contentLength > 0) {
@@ -68,13 +67,6 @@ public class ProgressResponseBody extends ResponseBody {
                             @Override
                             public void run() {
                                 mCallback.onProgress((int) (totalBytesRead * 100f / contentLength));
-                            }
-                        });
-                    } else {
-                        ThreadHelper.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mCallback.onError(ErrorType.CONTENT_LENGTH_EMPTY, "content length is 0");
                             }
                         });
                     }

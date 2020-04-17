@@ -11,9 +11,6 @@ public interface RequestCallback<ResultType> {
     void onStart();
 
     @MainThread
-    void onProgress(int progress);
-
-    @MainThread
     void onSuccess(ResultType data);
 
     @MainThread

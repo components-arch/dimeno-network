@@ -6,21 +6,33 @@ import java.util.List;
 import okhttp3.Interceptor;
 
 /**
- * NetConfig
+ * net config
  * Created by wangzhen on 2020/4/15.
  */
 public class NetConfig {
     public String baseUrl;
     public List<Interceptor> interceptors;
+    public boolean retryOnConnectionFailure;
+    public long connectTimeout;
+    public long readTimeout;
+    public long writeTimeout;
 
     private NetConfig(Builder builder) {
         this.baseUrl = builder.baseUrl;
         this.interceptors = builder.interceptors;
+        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
+        this.connectTimeout = builder.connectTimeout;
+        this.readTimeout = builder.readTimeout;
+        this.writeTimeout = builder.writeTimeout;
     }
 
     public static class Builder {
         String baseUrl;
         List<Interceptor> interceptors;
+        boolean retryOnConnectionFailure = true;
+        long connectTimeout;
+        long readTimeout;
+        long writeTimeout;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -28,10 +40,30 @@ public class NetConfig {
         }
 
         public Builder interceptor(Interceptor interceptor) {
-            if (interceptors == null) {
-                interceptors = new ArrayList<>();
+            if (this.interceptors == null) {
+                this.interceptors = new ArrayList<>();
             }
-            interceptors.add(interceptor);
+            this.interceptors.add(interceptor);
+            return this;
+        }
+
+        public Builder retryOnConnectionFailure(boolean retry) {
+            this.retryOnConnectionFailure = retry;
+            return this;
+        }
+
+        public Builder connectTimeout(long connectTimeout) {
+            this.connectTimeout = connectTimeout;
+            return this;
+        }
+
+        public Builder readTimeout(long readTimeout) {
+            this.readTimeout = readTimeout;
+            return this;
+        }
+
+        public Builder writeTimeout(long writeTimeout) {
+            this.writeTimeout = writeTimeout;
             return this;
         }
 

@@ -20,12 +20,11 @@ public static class Builder {
 ``` 
 
 #### 发起请求
-GET  
-自定义Task继承 **GetTask**  
+GET  继承 **GetTask**  
 ```java
-new TestGetTask(new LoadingCallback<String>() {
+new TestGetTask(new LoadingCallback<EntityType>() {
     @Override
-    public void onSuccess(PluginVersion data) {
+    public void onSuccess(EntityType data) {
         
     }
 
@@ -35,12 +34,11 @@ new TestGetTask(new LoadingCallback<String>() {
     }
 }).exe();
 ``` 
-POST_JSON  
-自定义Task继承 **PostJsonTask**  
+POST_JSON  自定义Task继承 **PostJsonTask**    
 ```java
-new TestPostJsonTask(new LoadingCallback<String>() {
+new TestPostJsonTask(new LoadingCallback<EntityType>() {
     @Override
-    public void onSuccess(PluginVersion data) {
+    public void onSuccess(EntityType data) {
         
     }
 
@@ -50,12 +48,11 @@ new TestPostJsonTask(new LoadingCallback<String>() {
     }
 }).exe();
 ``` 
-POST_FORM  
-自定义Task继承 **PostFormTask**  
+POST_FORM  自定义Task继承 **PostFormTask**    
 ```java
-new TestPostFormTask(new LoadingCallback<String>() {
+new TestPostFormTask(new LoadingCallback<EntityType>() {
     @Override
-    public void onSuccess(PluginVersion data) {
+    public void onSuccess(EntityType data) {
         
     }
 
@@ -66,12 +63,11 @@ new TestPostFormTask(new LoadingCallback<String>() {
 }).exe();
 ``` 
 
-UPLOAD  
-自定义Task继承 **UploadTask**  
+UPLOAD  自定义Task继承 **UploadTask**    
 ```java
-new TestUploadTask(new ProgressCallback<String>() {
+new TestUploadTask(new ProgressCallback<EntityType>() {
     @Override
-    public void onSuccess(PluginVersion data) {
+    public void onSuccess(EntityType data) {
         
     }
     

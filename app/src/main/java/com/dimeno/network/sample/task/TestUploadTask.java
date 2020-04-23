@@ -19,6 +19,6 @@ public class TestUploadTask extends UploadTask {
 
     @Override
     public String getApi() {
-        return "http://49.233.208.223:8086/jyapi/audioFile2text.do";
+        return "https://jyai.birdbot.cn/jyapi/audioFile2text.do";
     }
 }

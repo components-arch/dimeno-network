@@ -13,11 +13,19 @@ import com.dimeno.network.callback.LoadingCallback;
 import com.dimeno.network.callback.ProgressCallback;
 import com.dimeno.network.sample.entity.PluginVersion;
 import com.dimeno.network.sample.task.TestGetTask;
+import com.dimeno.network.sample.task.TestGetTokenTask;
 import com.dimeno.network.sample.task.TestPostFormTask;
 import com.dimeno.network.sample.task.TestPostJsonTask;
 import com.dimeno.network.sample.task.TestUploadTask;
 import com.dimeno.permission.PermissionManager;
 import com.dimeno.permission.callback.AbsPermissionCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 PermissionManager.request(this, new AbsPermissionCallback() {
                     @Override
                     public void onGrant(String[] permissions) {
-                        upload();
+                        getToken();
                     }
 
                     @Override
@@ -59,8 +67,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void upload() {
-        String path = Environment.getExternalStorageDirectory() + "/Recorder/sample.mp3";
+    private void getToken() {
+        new TestGetTokenTask(new LoadingCallback<String>() {
+            @Override
+            public void onSuccess(String data) {
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    upload(jsonObject.getString("result"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }).exe("gddc", "OjE1NjI4MjUxOTk1MzIsI");
+    }
+
+    private void upload(String token) {
+        Map<String, String> params = new HashMap<>();
+        params.put("token", token);
+        params.put("fileType", "MP3");
+        params.put("param1", "4");
+        params.put("param2", "{}");
+        params.put("param3", "");
+
+        Map<String, String> files = new HashMap<>();
+        files.put("sourceFile", Environment.getExternalStorageDirectory() + "/Recorder/sample.mp3");
+
         new TestUploadTask(new ProgressCallback<String>() {
             @Override
             public void onSuccess(String data) {
@@ -76,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
-        }).exe(path);
+        }).exe(params, files);
     }
 
     private void postForm() {
@@ -119,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, "Post Json -> " + message, Toast.LENGTH_SHORT).show();
             }
-        }).exe();
+        }).exe(Arrays.asList("1", "2", "3"));
     }
 
     private void get() {

@@ -1,5 +1,7 @@
 package com.dimeno.network;
 
+import android.content.Context;
+
 import com.dimeno.network.base.Common;
 import com.dimeno.network.config.NetConfig;
 import com.dimeno.network.interceptor.ProgressInterceptor;
@@ -97,7 +99,11 @@ public final class ClientLoader {
      * @return cache
      */
     private static Cache getCache() {
-        File httpCacheDirectory = new File(ContextProvider.sContext.getCacheDir(), "HttpCache");
+        Context context = ContextProvider.sContext;
+        if (context == null) {
+            context = Network.sContext;
+        }
+        File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
         return new Cache(httpCacheDirectory, 10 * 1024 * 1024);
     }
 

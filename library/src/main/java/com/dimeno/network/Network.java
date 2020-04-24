@@ -17,7 +17,7 @@ public final class Network {
     }
 
     public static void init(Context context, NetConfig config) {
-        if (sContext != null) {
+        if (context != null) {
             sContext = context.getApplicationContext();
         }
         sConfig = config;

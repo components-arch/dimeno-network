@@ -1,6 +1,9 @@
 ## dimeno-network
 基于OkHttp3网络框架
 
+[![Platform](https://img.shields.io/badge/Platform-Android-00CC00.svg?style=flat)](https://www.android.com)
+[![](https://jitpack.io/v/dimeno-tech/dimeno-network.svg)](https://jitpack.io/#dimeno-tech/dimeno-network)
+
 #### 自定义全局配置
 > 可不初始化，此时将使用默认配置，每个网络请求必须写明全路径
 ```java

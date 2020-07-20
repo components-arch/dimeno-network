@@ -1,6 +1,6 @@
 package com.dimeno.network.base;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -12,7 +12,9 @@ import okhttp3.Call;
 public interface Task {
     Call exe(Object... params);
 
-    Call exe(Collection collection);
+    Call exe(List<String> collection);
+
+    Call exe(Map<String, Object> paramsMap);
 
     Call exe(Map<String, Object> paramsMap, Map<String, String> filesMap);
 

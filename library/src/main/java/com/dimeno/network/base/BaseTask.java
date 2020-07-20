@@ -16,10 +16,12 @@ import com.dimeno.network.util.ParamsBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,11 +57,16 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
     }
 
     @Override
-    public Call exe(Collection collection) {
-        if (collection == null) {
-            collection = Collections.EMPTY_LIST;
+    public Call exe(List<String> list) {
+        if (list == null) {
+            list = Collections.emptyList();
         }
-        return exe(collection.toArray(new Object[0]));
+        return exe(list.toArray(new Object[0]));
+    }
+
+    @Override
+    public Call exe(Map<String, Object> paramsMap) {
+        return exe(paramsMap, null);
     }
 
     @Override
@@ -134,7 +141,7 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
 
     @Override
     public Call retry() {
-        return exe(mParams);
+        return doTask();
     }
 
     @Override

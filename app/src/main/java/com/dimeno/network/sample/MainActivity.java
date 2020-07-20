@@ -29,6 +29,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private TestGetTask testGetTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,7 +161,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void get() {
-        new TestGetTask(new LoadingCallback<PluginVersion>() {
+        if(testGetTask != null){
+            Toast.makeText(this, "重试", Toast.LENGTH_SHORT).show();
+            testGetTask.retry();
+            return;
+        }
+        testGetTask = new TestGetTask(new LoadingCallback<PluginVersion>() {
             @Override
             public void onSuccess(PluginVersion data) {
                 Toast.makeText(MainActivity.this, "Get -> " + data.version_name + " " + data.version_description, Toast.LENGTH_SHORT).show();
@@ -169,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, "Get -> " + message, Toast.LENGTH_SHORT).show();
             }
-        }).exe();
+        });
+        testGetTask.exe();
     }
 }

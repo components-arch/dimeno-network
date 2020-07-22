@@ -16,12 +16,8 @@ import com.dimeno.network.util.ParamsBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +33,6 @@ import okhttp3.Response;
 public abstract class BaseTask<EntityType> implements Task, Callback {
     private RequestCallback<EntityType> mCallback;
     private RequestType mRequestType;
-    private Object mParams;
 
     private Map<String, Object> mParamsMap;
     private Map<String, String> mFilesMap;
@@ -51,44 +46,7 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
 
     @Override
     public Call exe(Object... params) {
-        this.mParams = params;
         onSetupParams(params);
-        return doTask();
-    }
-
-    @Override
-    public Call exe(List<String> list) {
-        if (list == null) {
-            list = Collections.emptyList();
-        }
-        return exe(list.toArray(new Object[0]));
-    }
-
-    @Override
-    public Call exe(Map<String, Object> paramsMap) {
-        return exe(paramsMap, null);
-    }
-
-    @Override
-    public Call exe(Map<String, Object> paramsMap, Map<String, String> filesMap) {
-        if (paramsMap == null) {
-            paramsMap = new HashMap<>();
-        }
-        for (Map.Entry<String, Object> entry : paramsMap.entrySet()) {
-            if (mParamsMap == null) {
-                mParamsMap = new HashMap<>();
-            }
-            mParamsMap.put(entry.getKey(), entry.getValue());
-        }
-        if (filesMap == null) {
-            filesMap = new HashMap<>();
-        }
-        for (Map.Entry<String, String> entry : filesMap.entrySet()) {
-            if (mFilesMap == null) {
-                mFilesMap = new HashMap<>();
-            }
-            mFilesMap.put(entry.getKey(), entry.getValue());
-        }
         return doTask();
     }
 
@@ -142,6 +100,11 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
     @Override
     public Call retry() {
         return doTask();
+    }
+
+    @Override
+    public void onSetupParams(Object... params) {
+
     }
 
     @Override

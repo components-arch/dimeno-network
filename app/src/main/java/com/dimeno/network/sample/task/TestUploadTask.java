@@ -13,11 +13,6 @@ public class TestUploadTask extends UploadTask {
     }
 
     @Override
-    public void onSetupParams(Object... params) {
-        putFile("sourceFile", (String) params[0]);
-    }
-
-    @Override
     public String getApi() {
         return "https://jyai.birdbot.cn/jyapi/audioFile2text.do";
     }

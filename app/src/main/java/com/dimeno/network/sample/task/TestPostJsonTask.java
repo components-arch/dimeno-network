@@ -13,12 +13,7 @@ public class TestPostJsonTask extends PostJsonTask {
     }
 
     @Override
-    public void onSetupParams(Object... params) {
-
-    }
-
-    @Override
     public String getApi() {
-        return "http://192.168.188.132:8080/wangzhen/plugin/plugin.json";
+        return "http://192.168.10.100:8080/wangzhen/plugin/plugin.json";
     }
 }

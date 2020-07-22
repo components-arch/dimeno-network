@@ -23,10 +23,6 @@ import com.dimeno.permission.callback.AbsPermissionCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TestGetTask testGetTask;
@@ -89,16 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void upload(String token) {
-        Map<String, String> params = new HashMap<>();
-        params.put("token", token);
-        params.put("fileType", "MP3");
-        params.put("param1", "4");
-        params.put("param2", "{}");
-        params.put("param3", "");
-
-        Map<String, String> files = new HashMap<>();
-        files.put("sourceFile", Environment.getExternalStorageDirectory() + "/Recorder/sample.mp3");
-
         new TestUploadTask(new ProgressCallback<String>() {
             @Override
             public void onSuccess(String data) {
@@ -114,7 +100,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
-        }).exe(params, files);
+        }).setTag(this)
+                .put("token", token)
+                .put("fileType", "MP3")
+                .put("param1", "4")
+                .put("param2", "{}")
+                .put("param3", "")
+                .putFile("sourceFile", Environment.getExternalStorageDirectory() + "/Recorder/sample.mp3")
+                .exe();
     }
 
     private void postForm() {
@@ -157,11 +150,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, "Post Json -> " + message, Toast.LENGTH_SHORT).show();
             }
-        }).exe(Arrays.asList("1", "2", "3"));
+        }).exe();
     }
 
     private void get() {
-        if(testGetTask != null){
+        if (testGetTask != null) {
             Toast.makeText(this, "重试", Toast.LENGTH_SHORT).show();
             testGetTask.retry();
             return;

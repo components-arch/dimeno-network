@@ -13,6 +13,11 @@ public interface RequestCallback<ResultType> {
     @MainThread
     void onSuccess(ResultType data);
 
+    /**
+     * @param code    code
+     * @param message message
+     * @see com.dimeno.network.type.ErrorType
+     */
     @MainThread
     void onError(int code, String message);
 

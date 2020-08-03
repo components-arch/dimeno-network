@@ -16,6 +16,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * ResponseParser
@@ -29,17 +30,18 @@ public final class ResponseParser {
             try {
                 handleBody(response, callback);
             } catch (Exception e) {
-                onError(ErrorType.UNKNOWN_ERROR, e.getMessage(), callback);
+                onError(ErrorType.Code.UNKNOWN_ERROR, e.getMessage(), callback);
             }
         } else {
-            onError(ErrorType.SERVER_FAILED, ErrorType.wrap(response.code()), callback);
+            onError(response.code(), response.message(), callback);
         }
         onComplete(callback);
     }
 
     private static <EntityType> void handleBody(final Response response, final RequestCallback<EntityType> callback) throws IOException {
-        if (response.body() != null) {
-            String body = response.body().string();
+        ResponseBody responseBody = response.body();
+        if (responseBody != null) {
+            String body = responseBody.string();
             EntityType data = null;
             if (callback != null) {
                 Type typeOf = Generics.getGenericType(callback.getClass(), RequestCallback.class);
@@ -51,29 +53,38 @@ public final class ResponseParser {
                     data = (EntityType) body;
                 } else {
                     data = JsonUtils.parseObject(body, typeOf);
+                    if (data == null) {
+                        onError(ErrorType.Code.NULL_DATA, "null data", callback);
+                        return;
+                    }
                 }
             }
             onSuccess(data, callback);
         } else {
-            onError(ErrorType.RESPONSE_BODY_EMPTY, "empty response body", callback);
+            onError(ErrorType.Code.EMPTY_BODY, "empty response body", callback);
         }
     }
 
     public static <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
         int code;
-        if (e instanceof UnknownHostException) {
-            code = ErrorType.UNKNOWN_HOST;
-        } else if (e instanceof SocketTimeoutException) {
-            code = ErrorType.TIME_OUT;
+        String message;
+        if (e instanceof SocketTimeoutException) {
+            code = ErrorType.Code.TIME_OUT;
+            message = ErrorType.Message.TIME_OUT;
             // 解决停留网络超时问题
             ClientLoader.getClient().connectionPool().evictAll();
         } else if (e instanceof ConnectException) {
             // 网络连接失败(eg:代理出问题)
-            code = ErrorType.CONNECT_EXCEPTION;
+            code = ErrorType.Code.CONNECT_EXCEPTION;
+            message = ErrorType.Message.CONNECT_EXCEPTION;
+        } else if (e instanceof UnknownHostException) {
+            code = ErrorType.Code.UNKNOWN_HOST;
+            message = ErrorType.Message.UNKNOWN_HOST;
         } else {
-            code = ErrorType.UNKNOWN_ERROR;
+            code = ErrorType.Code.UNKNOWN_ERROR;
+            message = ErrorType.Message.SYSTEM_BUSY;
         }
-        onError(code, ErrorType.wrap(code), callback);
+        onError(code, message, callback);
         onComplete(callback);
     }
 

@@ -169,7 +169,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(int code, String message) {
                 Toast.makeText(MainActivity.this, "Get -> " + message, Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(MainActivity.this, "请求被取消", Toast.LENGTH_SHORT).show();
+            }
         });
-        testGetTask.exe();
+        testGetTask.setTag(this).exe();
     }
 }

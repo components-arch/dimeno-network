@@ -12,6 +12,7 @@ import com.dimeno.network.util.JsonUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -66,25 +67,21 @@ public final class ResponseParser {
     }
 
     public static <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
-        int code;
-        String message;
         if (e instanceof SocketTimeoutException) {
-            code = ErrorType.Code.TIME_OUT;
-            message = ErrorType.Message.TIME_OUT;
+            onError(ErrorType.Code.TIME_OUT, ErrorType.Message.TIME_OUT, callback);
             // 解决停留网络超时问题
             ClientLoader.getClient().connectionPool().evictAll();
         } else if (e instanceof ConnectException) {
             // 网络连接失败(eg:代理出问题)
-            code = ErrorType.Code.CONNECT_EXCEPTION;
-            message = ErrorType.Message.CONNECT_EXCEPTION;
+            onError(ErrorType.Code.CONNECT_EXCEPTION, ErrorType.Message.CONNECT_EXCEPTION, callback);
         } else if (e instanceof UnknownHostException) {
-            code = ErrorType.Code.UNKNOWN_HOST;
-            message = ErrorType.Message.UNKNOWN_HOST;
+            onError(ErrorType.Code.UNKNOWN_HOST, ErrorType.Message.UNKNOWN_HOST, callback);
+        } else if (e instanceof SocketException) {
+            // 主动取消
+            onCancel(callback);
         } else {
-            code = ErrorType.Code.UNKNOWN_ERROR;
-            message = ErrorType.Message.SYSTEM_BUSY;
+            onError(ErrorType.Code.UNKNOWN_ERROR, ErrorType.Message.SYSTEM_BUSY, callback);
         }
-        onError(code, message, callback);
         onComplete(callback);
     }
 
@@ -105,6 +102,17 @@ public final class ResponseParser {
             public void run() {
                 if (callback != null) {
                     callback.onError(code, message);
+                }
+            }
+        });
+    }
+
+    private static <EntityType> void onCancel(final RequestCallback<EntityType> callback) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (callback != null) {
+                    callback.onCancel();
                 }
             }
         });

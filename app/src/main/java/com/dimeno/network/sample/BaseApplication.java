@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.dimeno.network.Network;
 import com.dimeno.network.config.NetConfig;
-import com.dimeno.network.sample.interceptor.TestInterceptor;
+import com.dimeno.network.sample.interceptor.UrlInterceptor;
 
 /**
  * BaseApplication
@@ -15,7 +15,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Network.init(new NetConfig.Builder()
-                .interceptor(new TestInterceptor())
+                .interceptor(new UrlInterceptor())
                 .build());
     }
 }

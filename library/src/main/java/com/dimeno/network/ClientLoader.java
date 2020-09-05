@@ -103,8 +103,10 @@ public final class ClientLoader {
         if (context == null) {
             context = Network.sContext;
         }
-        File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
+        if (context == null) {
+            throw new NullPointerException("Context is null, call Network.init(Context, NetConfig) to provide context.");
+        }
+        File httpCacheDirectory = new File(context.getExternalCacheDir(), "HttpCache");
         return new Cache(httpCacheDirectory, 10 * 1024 * 1024);
     }
-
 }

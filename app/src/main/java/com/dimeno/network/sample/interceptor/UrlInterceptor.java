@@ -11,15 +11,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * TestInterceptor
+ * UrlInterceptor
  * Created by wangzhen on 2020/4/17.
  */
-public class TestInterceptor implements Interceptor {
+public class UrlInterceptor implements Interceptor {
     @NotNull
     @Override
     public Response intercept(@NotNull Chain chain) throws IOException {
         Request request = chain.request();
-        Log.e("TAG", "-> TestInterceptor " + request.url().toString());
-        return chain.proceed(request);
+        Log.e("TAG", "-> UrlInterceptor " + request.url().toString());
+        return chain.proceed(request).newBuilder()
+                .build();
     }
 }

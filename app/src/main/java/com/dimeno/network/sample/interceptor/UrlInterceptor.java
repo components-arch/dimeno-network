@@ -20,7 +20,6 @@ public class UrlInterceptor implements Interceptor {
     public Response intercept(@NotNull Chain chain) throws IOException {
         Request request = chain.request();
         Log.e("TAG", "-> UrlInterceptor " + request.url().toString());
-        return chain.proceed(request).newBuilder()
-                .build();
+        return chain.proceed(request);
     }
 }

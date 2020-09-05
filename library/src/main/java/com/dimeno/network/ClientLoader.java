@@ -67,6 +67,11 @@ public final class ClientLoader {
         NetConfig config = Network.sConfig;
         if (config != null) {
             OkHttpClient.Builder builder = client.newBuilder();
+            if (config.netInterceptors != null && !config.netInterceptors.isEmpty()) {
+                for (Interceptor interceptor : config.netInterceptors) {
+                    builder.addNetworkInterceptor(interceptor);
+                }
+            }
             if (config.interceptors != null && !config.interceptors.isEmpty()) {
                 for (Interceptor interceptor : config.interceptors) {
                     builder.addInterceptor(interceptor);

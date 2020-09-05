@@ -11,6 +11,7 @@ import okhttp3.Interceptor;
  */
 public class NetConfig {
     public String baseUrl;
+    public List<Interceptor> netInterceptors;
     public List<Interceptor> interceptors;
     public boolean retryOnConnectionFailure;
     public long connectTimeout;
@@ -19,6 +20,7 @@ public class NetConfig {
 
     private NetConfig(Builder builder) {
         this.baseUrl = builder.baseUrl;
+        this.netInterceptors = builder.netInterceptors;
         this.interceptors = builder.interceptors;
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.connectTimeout = builder.connectTimeout;
@@ -28,6 +30,7 @@ public class NetConfig {
 
     public static class Builder {
         String baseUrl;
+        List<Interceptor> netInterceptors;
         List<Interceptor> interceptors;
         boolean retryOnConnectionFailure = true;
         long connectTimeout;
@@ -36,6 +39,14 @@ public class NetConfig {
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
+            return this;
+        }
+
+        public Builder netInterceptor(Interceptor interceptor) {
+            if (this.netInterceptors == null) {
+                this.netInterceptors = new ArrayList<>();
+            }
+            this.netInterceptors.add(interceptor);
             return this;
         }
 

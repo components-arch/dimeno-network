@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import com.dimeno.network.ClientLoader;
 import com.dimeno.network.callback.RequestCallback;
+import com.dimeno.network.loading.LoadingPage;
 import com.dimeno.network.type.ErrorType;
 import com.dimeno.network.util.Generics;
 import com.dimeno.network.util.JsonUtils;
@@ -20,13 +21,27 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * ResponseParser
+ * response parser
  * Created by wangzhen on 2020/4/15.
  */
 public final class ResponseParser {
-    private static Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private LoadingPage mLoadingPage;
 
-    public static <EntityType> void parseResponse(Response response, RequestCallback<EntityType> callback) {
+    public static ResponseParser get() {
+        return Inner.INSTANCE;
+    }
+
+    private static class Inner {
+        static ResponseParser INSTANCE = new ResponseParser();
+    }
+
+    public ResponseParser loadingPage(LoadingPage page) {
+        this.mLoadingPage = page;
+        return this;
+    }
+
+    public <EntityType> void parseResponse(Response response, RequestCallback<EntityType> callback) {
         if (response.code() == 200) {
             try {
                 handleBody(response, callback);
@@ -39,7 +54,7 @@ public final class ResponseParser {
         onComplete(callback);
     }
 
-    private static <EntityType> void handleBody(final Response response, final RequestCallback<EntityType> callback) throws IOException {
+    private <EntityType> void handleBody(final Response response, final RequestCallback<EntityType> callback) throws IOException {
         ResponseBody responseBody = response.body();
         if (responseBody != null) {
             String body = responseBody.string();
@@ -66,7 +81,7 @@ public final class ResponseParser {
         }
     }
 
-    public static <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
+    public <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
         if (e instanceof SocketTimeoutException) {
             onError(ErrorType.Code.TIME_OUT, ErrorType.Message.TIME_OUT, callback);
             // 解决停留网络超时问题
@@ -85,40 +100,52 @@ public final class ResponseParser {
         onComplete(callback);
     }
 
-    private static <EntityType> void onSuccess(final EntityType data, final RequestCallback<EntityType> callback) {
+    private <EntityType> void onSuccess(final EntityType data, final RequestCallback<EntityType> callback) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (callback != null) {
-                    callback.onSuccess(data);
+                if (mLoadingPage != null) {
+                    mLoadingPage.onSuccess();
+                } else {
+                    if (callback != null) {
+                        callback.onSuccess(data);
+                    }
                 }
             }
         });
     }
 
-    private static <EntityType> void onError(final int code, final String message, final RequestCallback<EntityType> callback) {
+    private <EntityType> void onError(final int code, final String message, final RequestCallback<EntityType> callback) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (callback != null) {
-                    callback.onError(code, message);
+                if (mLoadingPage != null) {
+                    mLoadingPage.onError();
+                } else {
+                    if (callback != null) {
+                        callback.onError(code, message);
+                    }
                 }
             }
         });
     }
 
-    private static <EntityType> void onCancel(final RequestCallback<EntityType> callback) {
+    private <EntityType> void onCancel(final RequestCallback<EntityType> callback) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (callback != null) {
-                    callback.onCancel();
+                if (mLoadingPage != null) {
+                    mLoadingPage.onError();
+                } else {
+                    if (callback != null) {
+                        callback.onCancel();
+                    }
                 }
             }
         });
     }
 
-    private static <EntityType> void onComplete(final RequestCallback<EntityType> callback) {
+    private <EntityType> void onComplete(final RequestCallback<EntityType> callback) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -129,7 +156,7 @@ public final class ResponseParser {
         });
     }
 
-    private static void runOnUiThread(Runnable runnable) {
+    private void runOnUiThread(Runnable runnable) {
         handler.post(runnable);
     }
 }

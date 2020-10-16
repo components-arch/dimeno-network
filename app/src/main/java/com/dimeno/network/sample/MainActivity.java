@@ -1,6 +1,7 @@
 package com.dimeno.network.sample;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dimeno.network.callback.LoadingCallback;
 import com.dimeno.network.callback.ProgressCallback;
+import com.dimeno.network.loading.DefaultLoadingPage;
 import com.dimeno.network.sample.entity.PluginVersion;
 import com.dimeno.network.sample.task.TestGetTask;
 import com.dimeno.network.sample.task.TestGetTokenTask;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_post_json).setOnClickListener(this);
         findViewById(R.id.btn_post_form).setOnClickListener(this);
         findViewById(R.id.btn_upload).setOnClickListener(this);
+        findViewById(R.id.btn_loading_page).setOnClickListener(this);
     }
 
     @Override
@@ -61,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(MainActivity.this, "需要存储权限", Toast.LENGTH_SHORT).show();
                     }
                 }, Manifest.permission.READ_EXTERNAL_STORAGE);
+                break;
+            case R.id.btn_loading_page:
+                startActivity(new Intent(this, LoadingActivity.class));
                 break;
         }
     }
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onComplete() {
                 Log.e("TAG", "-> onComplete");
             }
-        }).exe();
+        }).setLoadingPage(new DefaultLoadingPage(findViewById(R.id.container))).exe();
     }
 
     private void postJson() {

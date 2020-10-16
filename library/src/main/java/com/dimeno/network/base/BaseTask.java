@@ -3,10 +3,13 @@ package com.dimeno.network.base;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.dimeno.network.ClientLoader;
 import com.dimeno.network.Network;
 import com.dimeno.network.callback.ProgressCallback;
 import com.dimeno.network.callback.RequestCallback;
+import com.dimeno.network.loading.LoadingPage;
 import com.dimeno.network.manager.CallManager;
 import com.dimeno.network.manager.LifecycleManager;
 import com.dimeno.network.parser.ResponseParser;
@@ -31,13 +34,14 @@ import okhttp3.Response;
  * Created by wangzhen on 2020/4/15.
  */
 public abstract class BaseTask<EntityType> implements Task, Callback {
-    private RequestCallback<EntityType> mCallback;
-    private RequestType mRequestType;
+    private final RequestCallback<EntityType> mCallback;
+    private final RequestType mRequestType;
 
     private Map<String, Object> mParamsMap;
     private Map<String, String> mFilesMap;
     private Map<String, Set<String>> mHeaders;
     private Object mTag;
+    private LoadingPage mLoadingPage;
 
     public BaseTask(RequestCallback<EntityType> callback, RequestType type) {
         this.mCallback = callback;
@@ -146,14 +150,21 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
     }
 
     @Override
-    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+    public Task setLoadingPage(@NonNull LoadingPage page) {
+        page.setTask(this);
+        mLoadingPage = page;
+        return this;
+    }
+
+    @Override
+    public void onResponse(@NotNull Call call, @NotNull Response response) {
         CallManager.get().removeCall(mTag, call);
-        ResponseParser.parseResponse(response, mCallback);
+        ResponseParser.get().loadingPage(mLoadingPage).parseResponse(response, mCallback);
     }
 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
         CallManager.get().removeCall(mTag, call);
-        ResponseParser.parseError(e, mCallback);
+        ResponseParser.get().loadingPage(mLoadingPage).parseError(e, mCallback);
     }
 }

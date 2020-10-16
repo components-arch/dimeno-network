@@ -106,10 +106,9 @@ public final class ResponseParser {
             public void run() {
                 if (mLoadingPage != null) {
                     mLoadingPage.onSuccess();
-                } else {
-                    if (callback != null) {
-                        callback.onSuccess(data);
-                    }
+                }
+                if (callback != null) {
+                    callback.onSuccess(data);
                 }
             }
         });

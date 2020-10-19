@@ -3,6 +3,7 @@ package com.dimeno.network.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.CookieJar;
 import okhttp3.Interceptor;
 
 /**
@@ -13,6 +14,7 @@ public class NetConfig {
     public String baseUrl;
     public List<Interceptor> netInterceptors;
     public List<Interceptor> interceptors;
+    public CookieJar cookieJar;
     public boolean retryOnConnectionFailure;
     public long connectTimeout;
     public long readTimeout;
@@ -22,6 +24,7 @@ public class NetConfig {
         this.baseUrl = builder.baseUrl;
         this.netInterceptors = builder.netInterceptors;
         this.interceptors = builder.interceptors;
+        this.cookieJar = builder.cookieJar;
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.connectTimeout = builder.connectTimeout;
         this.readTimeout = builder.readTimeout;
@@ -32,6 +35,7 @@ public class NetConfig {
         String baseUrl;
         List<Interceptor> netInterceptors;
         List<Interceptor> interceptors;
+        CookieJar cookieJar;
         boolean retryOnConnectionFailure = true;
         long connectTimeout;
         long readTimeout;
@@ -55,6 +59,11 @@ public class NetConfig {
                 this.interceptors = new ArrayList<>();
             }
             this.interceptors.add(interceptor);
+            return this;
+        }
+
+        public Builder cookieJar(CookieJar cookieJar) {
+            this.cookieJar = cookieJar;
             return this;
         }
 

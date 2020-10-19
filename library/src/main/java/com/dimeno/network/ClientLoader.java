@@ -77,6 +77,9 @@ public final class ClientLoader {
                     builder.addInterceptor(interceptor);
                 }
             }
+            if (config.cookieJar != null) {
+                builder.cookieJar(config.cookieJar);
+            }
             builder.retryOnConnectionFailure(config.retryOnConnectionFailure);
             if (config.connectTimeout > 0) {
                 builder.connectTimeout(config.connectTimeout, TimeUnit.SECONDS);

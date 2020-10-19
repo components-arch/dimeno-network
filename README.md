@@ -4,8 +4,28 @@
 [![Platform](https://img.shields.io/badge/Platform-Android-00CC00.svg?style=flat)](https://www.android.com)
 [![](https://jitpack.io/v/dimeno-tech/dimeno-network.svg)](https://jitpack.io/#dimeno-tech/dimeno-network)
 
+### 依赖导入
+1、项目根目录build.gradle
+
+``` gradle
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+2、模块目录build.gradle
+
+``` gradle
+dependencies {
+	implementation 'com.github.dimeno-tech:dimeno-network:0.0.9'
+}
+```
+
 ### 自定义全局配置
-> 可不初始化，此时将使用默认配置，每个网络请求必须写明全路径
+> 如未初始化，网络请求请写明全路径
 
 ```java
 Network.init(NetConfig.Builder().build());
@@ -15,6 +35,7 @@ NetConfig支持方法
 ```java
 public static class Builder {
     public Builder baseUrl(String baseUrl);
+    public Builder netInterceptor(Interceptor interceptor);
     public Builder interceptor(Interceptor interceptor);
     public Builder retryOnConnectionFailure(boolean retry);
     public Builder connectTimeout(long connectTimeout);
@@ -25,39 +46,27 @@ public static class Builder {
 ```
 
 ### 请求类型
-<table style="width:100%;text-align:center">
-    <th>类型</th>
-    <th>继承关系</th>
-    <tr>
-        <td>GET</td>
-        <td>GetTask</td>
-    </tr>
-    <tr>
-        <td>POST_JSON</td>
-        <td>PostJsonTask</td>
-    </tr>
-    <tr>
-        <td>POST_FORM</td>
-        <td>PostFormTask</td>
-    </tr>
-    <tr>
-        <td>UPLOAD</td>
-        <td>UploadTask</td>
-    </tr>
-</table>
+
+| 类型 |继承关系|
+| :---: | :---: |
+| GET | GetTask |
+| POST_JSON | PostJsonTask |
+| POST_FORM | PostFormTask |
+| UPLOAD | UploadTask |
 
 网络请求Task支持方法
 
 ``` java
 public interface Task {
-    Call exe(Object... params);
-    Call retry();
     void onSetupParams(Object... params);
-    Task setTag(Object tag);
     String getApi();
     Task put(String key, Object value);
     Task putFile(String key, String filePath);
     Task addHeader(String name, String value);
+    Task setTag(Object tag);
+    Task setLoadingPage(LoadingPage page);
+    Call exe(Object... params);
+    Call retry();
 }
 ```
 
@@ -65,7 +74,7 @@ public interface Task {
 1、使用可变参数形式请求
 
 ```java
-new TestGetTask(new LoadingCallback<EntityType>() {
+new TestTask(new LoadingCallback<EntityType>() {
     @Override
     public void onSuccess(EntityType data) {
         
@@ -75,8 +84,8 @@ new TestGetTask(new LoadingCallback<EntityType>() {
 重写onSetupParams方法手动处理参数
 
 ```java
-public class TestGetTask extends GetTask {
-    public <EntityType> TestGetTask(RequestCallback<EntityType> callback) {
+public class TestTask extends GetTask {
+    public <EntityType> TestTask(RequestCallback<EntityType> callback) {
         super(callback);
     }
 
@@ -96,7 +105,7 @@ public class TestGetTask extends GetTask {
 2、链式传递参数
 
 ```java
-new TestUploadTask(new ProgressCallback<String>() {
+new TestTask(new ProgressCallback<String>() {
 	@Override
 	public void onSuccess(String data) {
 
@@ -113,3 +122,24 @@ new TestUploadTask(new ProgressCallback<String>() {
 	.exe();
 ```
 无需重写onSetupParams方法
+
+### 设置加载页
+setLoadingPage(LoadingPage page)
+> **注意**：  
+> 1、page为null无效  
+> 2、page构造参数为null无效
+
+1、使用默认加载页 **DefaultLoadingPage**
+
+``` java
+new TestTask(new LoadingCallback<String>() {
+    @Override
+    public void onSuccess(String data) {
+    
+    }
+}).setLoadingPage(new DefaultLoadingPage(recycler)).exe();
+```
+
+2、自定义加载页
+
+继承 **AbsLoadingPage** 并处理对应逻辑，如有疑问请参照 **DefaultLoadingPage**

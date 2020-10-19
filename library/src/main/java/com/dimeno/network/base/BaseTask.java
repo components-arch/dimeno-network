@@ -3,8 +3,6 @@ package com.dimeno.network.base;
 import android.text.TextUtils;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-
 import com.dimeno.network.ClientLoader;
 import com.dimeno.network.Network;
 import com.dimeno.network.callback.ProgressCallback;
@@ -150,8 +148,10 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
     }
 
     @Override
-    public Task setLoadingPage(@NonNull LoadingPage page) {
-        page.setTask(this);
+    public Task setLoadingPage(LoadingPage page) {
+        if (page != null) {
+            page.setTask(this);
+        }
         mLoadingPage = page;
         return this;
     }

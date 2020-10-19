@@ -36,14 +36,14 @@ public final class DefaultLoadingPage extends AbsLoadingPage {
         startLoading();
     }
 
+    @Override
+    protected void onLoadError() {
+        mContainerLoading.setVisibility(View.GONE);
+        mContainerError.setVisibility(View.VISIBLE);
+    }
+
     public void startLoading() {
         mContainerLoading.setVisibility(View.VISIBLE);
         mContainerError.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onError() {
-        mContainerLoading.setVisibility(View.GONE);
-        mContainerError.setVisibility(View.VISIBLE);
     }
 }

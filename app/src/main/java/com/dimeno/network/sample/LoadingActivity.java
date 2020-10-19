@@ -16,18 +16,22 @@ import com.dimeno.network.sample.task.TestPostFormTask;
  * Created by wangzhen on 2020/10/16.
  */
 public class LoadingActivity extends AppCompatActivity {
-    private View recycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-        recycler = findViewById(R.id.recycler);
+        View recycler = findViewById(R.id.recycler);
 
         new TestPostFormTask(new LoadingCallback<PluginVersion>() {
             @Override
             public void onSuccess(PluginVersion data) {
                 Toast.makeText(LoadingActivity.this, data.version_description, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                Toast.makeText(LoadingActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         }).setLoadingPage(new DefaultLoadingPage(recycler)).exe();
     }

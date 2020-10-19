@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-
 import com.dimeno.network.base.Task;
 
 /**
@@ -21,7 +19,7 @@ public abstract class AbsLoadingPage implements LoadingPage {
     private ViewGroup parent;
     private Task task;
 
-    public AbsLoadingPage(@NonNull View originalView) {
+    public AbsLoadingPage(View originalView) {
         this.mOriginalView = originalView;
         apply();
     }
@@ -70,7 +68,15 @@ public abstract class AbsLoadingPage implements LoadingPage {
         finishLoad();
     }
 
+    @Override
+    public void onError() {
+        if (mOriginalView != null)
+            onLoadError();
+    }
+
     protected abstract int layoutId();
 
     protected abstract void onViewCreated(View view);
+
+    protected abstract void onLoadError();
 }

@@ -1,7 +1,5 @@
 package com.dimeno.network.base;
 
-import androidx.annotation.NonNull;
-
 import com.dimeno.network.loading.LoadingPage;
 
 import okhttp3.Call;
@@ -23,7 +21,7 @@ public interface Task {
 
     Task setTag(Object tag);
 
-    Task setLoadingPage(@NonNull LoadingPage page);
+    Task setLoadingPage(LoadingPage page);
 
     Call exe(Object... params);
 

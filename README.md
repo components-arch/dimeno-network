@@ -1,11 +1,12 @@
 # dimeno-network
-基于OkHttp3网络框架
+>基于OkHttp3网络框架
 
 [![Platform](https://img.shields.io/badge/Platform-Android-00CC00.svg?style=flat)](https://www.android.com)
 [![](https://jitpack.io/v/dimeno-tech/dimeno-network.svg)](https://jitpack.io/#dimeno-tech/dimeno-network)
 
 ### 依赖导入
-1、项目根目录build.gradle
+
+项目根目录
 
 ``` gradle
 allprojects {
@@ -16,7 +17,7 @@ allprojects {
 }
 ```
 
-2、模块目录build.gradle
+模块目录
 
 ``` gradle
 dependencies {
@@ -37,6 +38,7 @@ public static class Builder {
     public Builder baseUrl(String baseUrl);
     public Builder netInterceptor(Interceptor interceptor);
     public Builder interceptor(Interceptor interceptor);
+    public CookieJar cookieJar;
     public Builder retryOnConnectionFailure(boolean retry);
     public Builder connectTimeout(long connectTimeout);
     public Builder readTimeout(long readTimeout);

@@ -142,6 +142,12 @@ new TestTask(new LoadingCallback<String>() {
 }).setLoadingPage(new DefaultLoadingPage(recycler)).exe();
 ```
 
-2、自定义加载页
+2、LoadingPage自定义成功延迟回调与加载时长
+
+``` java
+new DefaultLoadingPage(recycler).setDelay(3000).setDuration(2000)
+```
+
+3、自定义加载页
 
 继承 **AbsLoadingPage** 并处理对应逻辑，如有疑问请参照 **DefaultLoadingPage**

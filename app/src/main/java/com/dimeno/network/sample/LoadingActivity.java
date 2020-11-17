@@ -33,6 +33,6 @@ public class LoadingActivity extends AppCompatActivity {
             public void onError(int code, String message) {
                 Toast.makeText(LoadingActivity.this, message, Toast.LENGTH_SHORT).show();
             }
-        }).setLoadingPage(new DefaultLoadingPage(recycler)).exe();
+        }).setLoadingPage(new DefaultLoadingPage(recycler).setDelay(3000)).exe();
     }
 }

@@ -14,6 +14,6 @@ public class TestPostFormTask extends PostFormTask {
 
     @Override
     public String getApi() {
-        return "http://192.168.10.111:8080/wangzhen/plugin/plugin.json";
+        return "http://192.168.10.100:8080/wangzhen/plugin/plugin.json";
     }
 }

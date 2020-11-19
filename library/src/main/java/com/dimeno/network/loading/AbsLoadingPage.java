@@ -96,6 +96,7 @@ public abstract class AbsLoadingPage implements LoadingPage {
             onLoadError();
     }
 
+    @Override
     public LoadingPage setDelay(long delay) {
         if (delay > 0) {
             mDelay = delay;
@@ -103,6 +104,7 @@ public abstract class AbsLoadingPage implements LoadingPage {
         return this;
     }
 
+    @Override
     public LoadingPage setDuration(int duration) {
         if (duration >= 0) {
             mDuration = duration;

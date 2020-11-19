@@ -28,12 +28,11 @@ public final class ResponseParser {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private LoadingPage mLoadingPage;
 
-    public static ResponseParser get() {
-        return Inner.INSTANCE;
+    private ResponseParser() {
     }
 
-    private static class Inner {
-        static ResponseParser INSTANCE = new ResponseParser();
+    public static ResponseParser newInstance() {
+        return new ResponseParser();
     }
 
     public ResponseParser loadingPage(LoadingPage page) {

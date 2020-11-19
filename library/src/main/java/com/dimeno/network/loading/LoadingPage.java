@@ -23,4 +23,18 @@ public interface LoadingPage {
      * error occurs
      */
     void onError();
+
+    /**
+     * set end delay
+     *
+     * @param delay millis seconds
+     */
+    LoadingPage setDelay(long delay);
+
+    /**
+     * set end animation duration
+     *
+     * @param duration millis seconds
+     */
+    LoadingPage setDuration(int duration);
 }

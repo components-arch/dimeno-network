@@ -159,12 +159,12 @@ public abstract class BaseTask<EntityType> implements Task, Callback {
     @Override
     public void onResponse(@NotNull Call call, @NotNull Response response) {
         CallManager.get().removeCall(mTag, call);
-        ResponseParser.get().loadingPage(mLoadingPage).parseResponse(response, mCallback);
+        ResponseParser.newInstance().loadingPage(mLoadingPage).parseResponse(response, mCallback);
     }
 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
         CallManager.get().removeCall(mTag, call);
-        ResponseParser.get().loadingPage(mLoadingPage).parseError(e, mCallback);
+        ResponseParser.newInstance().loadingPage(mLoadingPage).parseError(e, mCallback);
     }
 }

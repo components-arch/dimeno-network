@@ -19,6 +19,7 @@ public class NetConfig {
     public long connectTimeout;
     public long readTimeout;
     public long writeTimeout;
+    public boolean debug;
 
     private NetConfig(Builder builder) {
         this.baseUrl = builder.baseUrl;
@@ -29,6 +30,7 @@ public class NetConfig {
         this.connectTimeout = builder.connectTimeout;
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
+        this.debug = builder.debug;
     }
 
     public static class Builder {
@@ -40,6 +42,7 @@ public class NetConfig {
         long connectTimeout;
         long readTimeout;
         long writeTimeout;
+        boolean debug;
 
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
@@ -84,6 +87,11 @@ public class NetConfig {
 
         public Builder writeTimeout(long writeTimeout) {
             this.writeTimeout = writeTimeout;
+            return this;
+        }
+
+        public Builder debug(boolean debug) {
+            this.debug = debug;
             return this;
         }
 

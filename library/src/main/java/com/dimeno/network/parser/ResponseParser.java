@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.dimeno.network.ClientLoader;
+import com.dimeno.network.Network;
 import com.dimeno.network.callback.RequestCallback;
 import com.dimeno.network.loading.LoadingPage;
 import com.dimeno.network.type.ErrorType;
@@ -45,10 +46,10 @@ public final class ResponseParser {
             try {
                 handleBody(response, callback);
             } catch (Exception e) {
-                onError(ErrorType.Code.UNKNOWN_ERROR, e.getMessage(), callback);
+                onError(ErrorType.Code.UNKNOWN_ERROR, convert(ErrorType.Message.SYSTEM_BUSY, e.getMessage()), callback);
             }
         } else {
-            onError(response.code(), response.message(), callback);
+            onError(response.code(), convert(ErrorType.Message.SYSTEM_BUSY, response.message()), callback);
         }
         onComplete(callback);
     }
@@ -69,32 +70,32 @@ public final class ResponseParser {
                 } else {
                     data = JsonUtils.parseObject(body, typeOf);
                     if (data == null) {
-                        onError(ErrorType.Code.NULL_DATA, "null data", callback);
+                        onError(ErrorType.Code.NULL_DATA, convert(ErrorType.Message.SYSTEM_BUSY, "data is null"), callback);
                         return;
                     }
                 }
             }
             onSuccess(data, callback);
         } else {
-            onError(ErrorType.Code.EMPTY_BODY, "empty response body", callback);
+            onError(ErrorType.Code.EMPTY_BODY, convert(ErrorType.Message.SYSTEM_BUSY, "empty response body"), callback);
         }
     }
 
     public <EntityType> void parseError(IOException e, RequestCallback<EntityType> callback) {
         if (e instanceof SocketTimeoutException) {
-            onError(ErrorType.Code.TIME_OUT, ErrorType.Message.TIME_OUT, callback);
+            onError(ErrorType.Code.TIME_OUT, convert(ErrorType.Message.TIME_OUT, e.getMessage()), callback);
             // 解决停留网络超时问题
             ClientLoader.getClient().connectionPool().evictAll();
         } else if (e instanceof ConnectException) {
             // 网络连接失败(eg:代理出问题)
-            onError(ErrorType.Code.CONNECT_EXCEPTION, ErrorType.Message.CONNECT_EXCEPTION, callback);
+            onError(ErrorType.Code.CONNECT_EXCEPTION, convert(ErrorType.Message.CONNECT_EXCEPTION, e.getMessage()), callback);
         } else if (e instanceof UnknownHostException) {
-            onError(ErrorType.Code.UNKNOWN_HOST, ErrorType.Message.UNKNOWN_HOST, callback);
+            onError(ErrorType.Code.UNKNOWN_HOST, convert(ErrorType.Message.UNKNOWN_HOST, e.getMessage()), callback);
         } else if (e instanceof SocketException) {
             // 主动取消
             onCancel(callback);
         } else {
-            onError(ErrorType.Code.UNKNOWN_ERROR, ErrorType.Message.SYSTEM_BUSY, callback);
+            onError(ErrorType.Code.UNKNOWN_ERROR, convert(ErrorType.Message.SYSTEM_BUSY, e.getMessage()), callback);
         }
         onComplete(callback);
     }
@@ -152,6 +153,13 @@ public final class ResponseParser {
                 }
             }
         });
+    }
+
+    private String convert(String friendlyMessage, String exceptionMessage) {
+        if (Network.sConfig != null && Network.sConfig.debug) {
+            return exceptionMessage;
+        }
+        return friendlyMessage;
     }
 
     private void runOnUiThread(Runnable runnable) {
